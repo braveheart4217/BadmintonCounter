@@ -1,0 +1,22 @@
+{
+  "name": "badminton-swing-speed",
+  "version": "1.0.0",
+  "description": "Xiaomi Smart Band 9 Pro (Vela OS) badminton swing speed meter quick app",
+  "scripts": {
+    "test": "node --test tests/swingDetector.test.js tests/scoreboard.test.js tests/swingClassifier.test.js tests/matchSession.test.js",
+    "build": "aiot build",
+    "release": "aiot release",
+    "start": "aiot start"
+  },
+  "keywords": [
+    "xiaomi-vela",
+    "smart-band-9-pro",
+    "badminton",
+    "accelerometer",
+    "quickapp"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "aiot-toolkit": "^2.0.5"
+  }
+}

@@ -1,0 +1,314 @@
+<template>
+  <div class="page">
+    <div class="header">
+      <div class="header-btn" onclick="goBack">
+        <text class="header-btn-text">返回</text>
+      </div>
+      <text class="title">对局记录</text>
+      <div
+        class="clear-btn"
+        style="width: {{clearBtnWidth}}; background-color: {{clearBtnBg}}; border-color: {{clearBtnBorder}};"
+        onclick="onClear"
+      >
+        <text class="clear-btn-text">{{clearBtnLabel}}</text>
+      </div>
+    </div>
+
+    <div class="empty-box" if="{{items.length === 0}}">
+      <text class="empty-title">暂无对局记录</text>
+      <text class="empty-desc">返回首页点击“开一局”开始记录</text>
+    </div>
+
+    <scroll class="list-scroll" scroll-y="true" if="{{items.length > 0}}">
+      <div
+        class="item-card"
+        for="{{item in items}}"
+        onclick="openDetail(item.id)"
+      >
+        <div class="item-top">
+          <text class="item-time">{{item.timeText}}</text>
+          <div class="outcome-tag" style="background-color: {{item.outcomeBg}};">
+            <text class="outcome-text" style="color: {{item.outcomeColor}};">{{item.outcomeTag}}</text>
+          </div>
+        </div>
+        <div class="item-mid">
+          <text class="item-score">{{item.scoreText}}</text>
+          <text class="item-max">{{item.maxSpeedText}}</text>
+        </div>
+        <text class="item-shots">{{item.shotsText}}</text>
+      </div>
+    </scroll>
+  </div>
+</template>
+
+<style>
+.page {
+  width: 336px;
+  height: 480px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex-direction: column;
+  background-color: #0a0f0d;
+}
+
+.header {
+  width: 304px;
+  height: 52px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.header-btn {
+  width: 72px;
+  height: 44px;
+  border-radius: 14px;
+  background-color: #16221d;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-btn-text {
+  font-size: 20px;
+  color: #e2e8f0;
+}
+
+.title {
+  font-size: 23px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.clear-btn {
+  width: 72px;
+  height: 44px;
+  border-radius: 14px;
+  background-color: #261618;
+  border-width: 1px;
+  border-color: #7f1d1d;
+  justify-content: center;
+  align-items: center;
+}
+
+.clear-btn-text {
+  font-size: 18px;
+  color: #fca5a5;
+}
+
+.empty-box {
+  width: 304px;
+  height: 384px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.empty-title {
+  font-size: 24px;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+.empty-desc {
+  font-size: 17px;
+  color: #64748b;
+  text-align: center;
+}
+
+.list-scroll {
+  width: 304px;
+  height: 384px;
+  flex-direction: column;
+}
+
+.item-card {
+  width: 304px;
+  height: 114px;
+  border-radius: 16px;
+  background-color: #121e19;
+  border-width: 1px;
+  border-color: #1f352b;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 10px;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.item-top {
+  width: 276px;
+  height: 24px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.item-time {
+  font-size: 15px;
+  color: #94a3b8;
+}
+
+.outcome-tag {
+  width: 36px;
+  height: 24px;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.outcome-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.item-mid {
+  width: 276px;
+  height: 34px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.item-score {
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.item-max {
+  font-size: 16px;
+  font-weight: bold;
+  color: #facc15;
+}
+
+.item-shots {
+  font-size: 15px;
+  color: #cbd5e1;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import { formatMatchTime } from '../../common/matchSession'
+import { loadMatchRecords, clearMatchRecords } from '../../common/storageHelper'
+
+function mapRecordToView(rec) {
+  const summary = rec.summary || {}
+  let outcomeTag = '平'
+  let outcomeBg = '#1e293b'
+  let outcomeColor = '#facc15'
+  if (rec.winner === 'my') {
+    outcomeTag = '胜'
+    outcomeBg = '#13281d'
+    outcomeColor = '#4ade80'
+  } else if (rec.winner === 'opp') {
+    outcomeTag = '负'
+    outcomeBg = '#261618'
+    outcomeColor = '#f87171'
+  }
+
+  const maxSpd = Number(summary.maxSpeedKmh) || 0
+  return {
+    id: rec.id,
+    timeText: formatMatchTime(rec.endedAt || rec.startedAt),
+    scoreText: `${rec.myScore} : ${rec.oppScore}`,
+    outcomeTag,
+    outcomeBg,
+    outcomeColor,
+    maxSpeedText: maxSpd > 0 ? `最高 ${maxSpd.toFixed(1)} km/h` : '无有效挥拍',
+    shotsText: `杀${summary.smashCount || 0} · 高${summary.clearCount || 0} · 共${summary.totalSwings || 0}拍`
+  }
+}
+
+export default {
+  private: {
+    items: [],
+    clearState: 'idle',
+    clearTimer: null
+  },
+
+  computed: {
+    clearBtnWidth() {
+      return this.clearState === 'confirm' ? '90px' : '72px'
+    },
+    clearBtnBg() {
+      return this.clearState === 'confirm' ? '#7f1d1d' : '#261618'
+    },
+    clearBtnBorder() {
+      return this.clearState === 'confirm' ? '#ef4444' : '#7f1d1d'
+    },
+    clearBtnLabel() {
+      return this.clearState === 'confirm' ? '确认清空' : '清空'
+    }
+  },
+
+  async onShow() {
+    this.cancelClearConfirm()
+    const records = await loadMatchRecords()
+    this.items = (Array.isArray(records) ? records : []).map(mapRecordToView)
+  },
+
+  onHide() {
+    this.cancelClearConfirm()
+  },
+
+  onDestroy() {
+    this.cancelClearConfirm()
+  },
+
+  cancelClearConfirm() {
+    if (this.clearTimer) {
+      clearTimeout(this.clearTimer)
+      this.clearTimer = null
+    }
+    this.clearState = 'idle'
+  },
+
+  async onClear() {
+    if (this.items.length === 0) {
+      return
+    }
+    if (this.clearState === 'idle') {
+      this.clearState = 'confirm'
+      if (this.clearTimer) {
+        clearTimeout(this.clearTimer)
+      }
+      this.clearTimer = setTimeout(() => {
+        this.clearState = 'idle'
+        this.clearTimer = null
+      }, 3000)
+      return
+    }
+
+    this.cancelClearConfirm()
+    await clearMatchRecords()
+    this.items = []
+  },
+
+  openDetail(matchId) {
+    this.cancelClearConfirm()
+    router.push({
+      uri: '/pages/summary',
+      params: {
+        matchId,
+        fromHistory: '1'
+      }
+    })
+  },
+
+  goBack() {
+    this.cancelClearConfirm()
+    router.back()
+  }
+}
+</script>

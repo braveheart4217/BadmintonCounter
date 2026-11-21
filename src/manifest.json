@@ -1,0 +1,77 @@
+{
+  "package": "com.diy.badminton.speed",
+  "name": "羽球测速",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "minPlatformVersion": 1000,
+  "deviceTypeList": [
+    "watch"
+  ],
+  "icon": "/common/logo.png",
+  "features": [
+    {
+      "name": "system.sensor"
+    },
+    {
+      "name": "system.brightness"
+    },
+    {
+      "name": "system.vibrator"
+    },
+    {
+      "name": "system.storage"
+    },
+    {
+      "name": "system.router"
+    }
+  ],
+  "config": {
+    "designWidth": 336
+  },
+  "router": {
+    "entry": "pages/index",
+    "pages": {
+      "pages/index": {
+        "component": "index"
+      },
+      "pages/history": {
+        "component": "history"
+      },
+      "pages/settings": {
+        "component": "settings"
+      },
+      "pages/score": {
+        "component": "score"
+      },
+      "pages/test": {
+        "component": "test"
+      },
+      "pages/summary": {
+        "component": "summary"
+      }
+    }
+  },
+  "display": {
+    "backgroundColor": "#0A0F0D",
+    "pages": {
+      "pages/index": {
+        "titleBar": false
+      },
+      "pages/history": {
+        "titleBar": false
+      },
+      "pages/settings": {
+        "titleBar": false
+      },
+      "pages/score": {
+        "titleBar": false
+      },
+      "pages/test": {
+        "titleBar": false
+      },
+      "pages/summary": {
+        "titleBar": false
+      }
+    }
+  }
+}

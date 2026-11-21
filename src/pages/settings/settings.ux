@@ -1,0 +1,462 @@
+<template>
+  <div class="page">
+    <div class="header">
+      <div class="header-btn" onclick="goBack">
+        <text class="header-btn-text">返回</text>
+      </div>
+      <text class="title">应用设置</text>
+      <div class="header-spacer"></div>
+    </div>
+
+    <scroll class="settings-scroll" scroll-y="true">
+      <div class="setting-card-col">
+        <div class="card-top">
+          <text class="item-title">杀球阈值 (&gt; km/h)</text>
+          <text class="item-sub">挥速大于此值判定为杀球（默认 150）</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decSmash">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value smash-val">{{smashText}}</text>
+          <div class="step-btn" onclick="incSmash">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-card-col">
+        <div class="card-top">
+          <text class="item-title">高远球阈值 (&gt; km/h)</text>
+          <text class="item-sub">挥速大于此值判定为高远球（默认 100）</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decClear">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value clear-val">{{clearText}}</text>
+          <div class="step-btn" onclick="incClear">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-card-col">
+        <div class="card-top">
+          <text class="item-title">有效挥拍下限 (≥ km/h)</text>
+          <text class="item-sub">低于此值不记为有效挥拍（默认 40）</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decMinValid">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value">{{minValidText}}</text>
+          <div class="step-btn" onclick="incMinValid">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-card-col">
+        <div class="card-top">
+          <text class="item-title">标定系数 K</text>
+          <text class="item-sub">范围 1.0 - 4.0（默认 2.2）</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decreaseCal">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value">{{calibrationText}}</text>
+          <div class="step-btn" onclick="increaseCal">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-card" onclick="cycleSensitivity">
+        <div class="card-left">
+          <text class="item-title">触发灵敏度</text>
+          <text class="item-sub">高档轻挥易触发</text>
+        </div>
+        <div class="pill-btn" style="background-color: #22c55e;">
+          <text class="pill-text" style="color: #052e16;">{{sensitivityLabel}}</text>
+        </div>
+      </div>
+
+      <div class="setting-card" onclick="toggleVibrate">
+        <div class="card-left">
+          <text class="item-title">杀球震动提示</text>
+          <text class="item-sub">对局判定为杀球时震动示意</text>
+        </div>
+        <div class="pill-btn" style="background-color: {{vibrateBg}};">
+          <text class="pill-text" style="color: {{vibrateTextColor}};">{{vibrateLabel}}</text>
+        </div>
+      </div>
+
+      <div class="setting-card" onclick="toggleKeepScreenOn">
+        <div class="card-left">
+          <text class="item-title">对局常亮</text>
+          <text class="item-sub">对局与测试期间防止熄屏</text>
+        </div>
+        <div class="pill-btn" style="background-color: {{keepScreenBg}};">
+          <text class="pill-text" style="color: {{keepScreenTextColor}};">{{keepScreenLabel}}</text>
+        </div>
+      </div>
+
+      <div class="reset-btn" onclick="onResetDefaults">
+        <text class="reset-btn-text">{{resetLabel}}</text>
+      </div>
+    </scroll>
+  </div>
+</template>
+
+<style>
+.page {
+  width: 336px;
+  height: 480px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex-direction: column;
+  background-color: #0a0f0d;
+}
+
+.header {
+  width: 304px;
+  height: 52px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.header-btn {
+  width: 72px;
+  height: 44px;
+  border-radius: 14px;
+  background-color: #16221d;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-btn-text {
+  font-size: 20px;
+  color: #e2e8f0;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.header-spacer {
+  width: 72px;
+  height: 44px;
+}
+
+.settings-scroll {
+  width: 304px;
+  height: 384px;
+  flex-direction: column;
+}
+
+.setting-card-col {
+  width: 304px;
+  height: 124px;
+  border-radius: 16px;
+  background-color: #121e19;
+  border-width: 1px;
+  border-color: #1f352b;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 10px;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.card-top {
+  flex-direction: column;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.stepper-row {
+  width: 276px;
+  height: 44px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step-btn {
+  width: 76px;
+  height: 44px;
+  border-radius: 14px;
+  background-color: #1e2f28;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step-btn-text {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.step-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #4ade80;
+}
+
+.smash-val {
+  color: #fb923c;
+}
+
+.clear-val {
+  color: #38bdf8;
+}
+
+.setting-card {
+  width: 304px;
+  height: 76px;
+  border-radius: 16px;
+  background-color: #121e19;
+  border-width: 1px;
+  border-color: #1f352b;
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.card-left {
+  flex-direction: column;
+  justify-content: center;
+}
+
+.item-title {
+  font-size: 20px;
+  color: #f8fafc;
+}
+
+.item-sub {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.pill-btn {
+  width: 68px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #22c55e;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.pill-text {
+  font-size: 20px;
+  font-weight: bold;
+  color: #052e16;
+}
+
+.reset-btn {
+  width: 304px;
+  height: 54px;
+  border-radius: 16px;
+  background-color: #261618;
+  border-width: 1px;
+  border-color: #7f1d1d;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.reset-btn-text {
+  font-size: 20px;
+  color: #fca5a5;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import { SENSITIVITY_PRESETS } from '../../common/swingDetector'
+import { adjustThreshold } from '../../common/swingClassifier'
+import {
+  DEFAULT_SETTINGS,
+  loadSettings,
+  saveSettings,
+  resetSettingsToDefault
+} from '../../common/storageHelper'
+
+const SENSITIVITY_ORDER = ['low', 'medium', 'high']
+
+export default {
+  private: {
+    settings: Object.assign({}, DEFAULT_SETTINGS),
+    resetState: 'idle',
+    resetTimer: null
+  },
+
+  computed: {
+    smashText() {
+      return `${this.settings.smashThreshold}`
+    },
+    clearText() {
+      return `${this.settings.clearThreshold}`
+    },
+    minValidText() {
+      return `${this.settings.minValidSpeed}`
+    },
+    calibrationText() {
+      return this.settings.calibrationFactor.toFixed(1)
+    },
+    sensitivityLabel() {
+      const preset = SENSITIVITY_PRESETS[this.settings.sensitivity] || SENSITIVITY_PRESETS.medium
+      return preset.label
+    },
+    vibrateBg() {
+      return this.settings.vibrate ? '#22c55e' : '#1e293b'
+    },
+    vibrateTextColor() {
+      return this.settings.vibrate ? '#052e16' : '#94a3b8'
+    },
+    vibrateLabel() {
+      return this.settings.vibrate ? '开' : '关'
+    },
+    keepScreenBg() {
+      return this.settings.keepScreenOn ? '#22c55e' : '#1e293b'
+    },
+    keepScreenTextColor() {
+      return this.settings.keepScreenOn ? '#052e16' : '#94a3b8'
+    },
+    keepScreenLabel() {
+      return this.settings.keepScreenOn ? '开' : '关'
+    },
+    resetLabel() {
+      if (this.resetState === 'confirm') {
+        return '再点一次确认恢复'
+      }
+      if (this.resetState === 'done') {
+        return '已恢复默认设置'
+      }
+      return '恢复默认设置'
+    }
+  },
+
+  async onShow() {
+    this.settings = await loadSettings()
+  },
+
+  onHide() {
+    this.clearResetTimer()
+  },
+
+  onDestroy() {
+    this.clearResetTimer()
+  },
+
+  clearResetTimer() {
+    if (this.resetTimer) {
+      clearTimeout(this.resetTimer)
+      this.resetTimer = null
+    }
+  },
+
+  async updateSettings(partial) {
+    const next = Object.assign({}, this.settings, partial)
+    this.settings = await saveSettings(next)
+  },
+
+  changeThreshold(key, delta) {
+    const nextThresholds = adjustThreshold(this.settings, key, delta)
+    this.updateSettings(nextThresholds)
+  },
+
+  decSmash() {
+    this.changeThreshold('smashThreshold', -5)
+  },
+
+  incSmash() {
+    this.changeThreshold('smashThreshold', 5)
+  },
+
+  decClear() {
+    this.changeThreshold('clearThreshold', -5)
+  },
+
+  incClear() {
+    this.changeThreshold('clearThreshold', 5)
+  },
+
+  decMinValid() {
+    this.changeThreshold('minValidSpeed', -5)
+  },
+
+  incMinValid() {
+    this.changeThreshold('minValidSpeed', 5)
+  },
+
+  decreaseCal() {
+    const nextVal = Math.max(1.0, Math.round((this.settings.calibrationFactor - 0.1) * 10) / 10)
+    this.updateSettings({ calibrationFactor: nextVal })
+  },
+
+  increaseCal() {
+    const nextVal = Math.min(4.0, Math.round((this.settings.calibrationFactor + 0.1) * 10) / 10)
+    this.updateSettings({ calibrationFactor: nextVal })
+  },
+
+  cycleSensitivity() {
+    const idx = SENSITIVITY_ORDER.indexOf(this.settings.sensitivity)
+    const nextKey = SENSITIVITY_ORDER[(idx + 1) % SENSITIVITY_ORDER.length]
+    this.updateSettings({ sensitivity: nextKey })
+  },
+
+  toggleVibrate() {
+    this.updateSettings({ vibrate: !this.settings.vibrate })
+  },
+
+  toggleKeepScreenOn() {
+    this.updateSettings({ keepScreenOn: !this.settings.keepScreenOn })
+  },
+
+  async onResetDefaults() {
+    if (this.resetState === 'idle') {
+      this.resetState = 'confirm'
+      this.clearResetTimer()
+      this.resetTimer = setTimeout(() => {
+        this.resetState = 'idle'
+      }, 3000)
+      return
+    }
+
+    if (this.resetState === 'confirm') {
+      this.clearResetTimer()
+      this.settings = await resetSettingsToDefault()
+      this.resetState = 'done'
+      this.resetTimer = setTimeout(() => {
+        this.resetState = 'idle'
+      }, 2000)
+    }
+  },
+
+  goBack() {
+    router.back()
+  }
+}
+</script>

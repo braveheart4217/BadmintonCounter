@@ -1,0 +1,633 @@
+<template>
+  <div class="page">
+    <div class="header">
+      <div class="header-btn" onclick="goBack">
+        <text class="header-btn-text">返回</text>
+      </div>
+      <text class="title">挥拍测试</text>
+      <div
+        class="toggle-pill"
+        style="background-color: {{toggleBg}}; border-color: {{toggleBorder}};"
+        onclick="toggleMonitoring"
+      >
+        <text class="toggle-pill-text" style="color: {{toggleColor}};">{{toggleLabel}}</text>
+      </div>
+    </div>
+
+    <scroll class="content-scroll" scroll-y="true">
+      <div
+        class="hero-card"
+        style="background-color: {{heroBg}}; border-color: {{heroBorder}};"
+      >
+        <div class="hero-top">
+          <div class="status-group">
+            <div class="status-dot" style="background-color: {{dotColor}};"></div>
+            <text class="status-text">{{statusText}}</text>
+          </div>
+          <text class="count-text">{{testCountText}}</text>
+        </div>
+
+        <text class="judgment-text" style="color: {{judgmentColor}};">{{judgmentText}}</text>
+        <text class="speed-text">{{speedText}}</text>
+        <text class="meta-text" style="color: {{metaColor}};">{{metaText}}</text>
+      </div>
+
+      <div class="rule-card">
+        <text class="rule-text">{{rulePreviewText}}</text>
+      </div>
+
+      <div class="param-card">
+        <div class="param-head">
+          <text class="param-title">杀球阈值</text>
+          <text class="param-sub">挥速 &gt; 此值判定为杀球 (km/h)</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decSmash">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value smash-val">{{smashText}}</text>
+          <div class="step-btn" onclick="incSmash">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+
+      <div class="param-card">
+        <div class="param-head">
+          <text class="param-title">高远球阈值</text>
+          <text class="param-sub">挥速 &gt; 此值判定为高远球 (km/h)</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decClear">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value clear-val">{{clearText}}</text>
+          <div class="step-btn" onclick="incClear">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+
+      <div class="param-card param-card-last">
+        <div class="param-head">
+          <text class="param-title">有效挥拍下限</text>
+          <text class="param-sub">低于此速度不记为有效挥拍 (km/h)</text>
+        </div>
+        <div class="stepper-row">
+          <div class="step-btn" onclick="decMinValid">
+            <text class="step-btn-text">-</text>
+          </div>
+          <text class="step-value valid-val">{{minValidText}}</text>
+          <div class="step-btn" onclick="incMinValid">
+            <text class="step-btn-text">+</text>
+          </div>
+        </div>
+      </div>
+    </scroll>
+  </div>
+</template>
+
+<style>
+.page {
+  width: 336px;
+  height: 480px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex-direction: column;
+  background-color: #0a0f0d;
+}
+
+.header {
+  width: 304px;
+  height: 48px;
+  margin-bottom: 10px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.header-btn {
+  width: 72px;
+  height: 42px;
+  border-radius: 14px;
+  background-color: #16221d;
+  border-width: 1px;
+  border-color: #263830;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-btn-text {
+  font-size: 19px;
+  color: #e2e8f0;
+}
+
+.title {
+  font-size: 23px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.toggle-pill {
+  width: 72px;
+  height: 42px;
+  border-radius: 14px;
+  background-color: #261618;
+  border-width: 1px;
+  border-color: #ef4444;
+  justify-content: center;
+  align-items: center;
+}
+
+.toggle-pill-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fca5a5;
+}
+
+.content-scroll {
+  width: 304px;
+  height: 390px;
+  flex-direction: column;
+}
+
+.hero-card {
+  width: 304px;
+  height: 176px;
+  border-radius: 20px;
+  background-color: #121e19;
+  border-width: 2px;
+  border-color: #1f352b;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 10px;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.hero-top {
+  width: 276px;
+  height: 26px;
+  margin-bottom: 6px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.status-group {
+  flex-direction: row;
+  align-items: center;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  margin-right: 6px;
+}
+
+.status-text {
+  font-size: 16px;
+  color: #cbd5e1;
+}
+
+.count-text {
+  font-size: 16px;
+  color: #94a3b8;
+}
+
+.judgment-text {
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.speed-text {
+  font-size: 36px;
+  line-height: 40px;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+}
+
+.meta-text {
+  font-size: 15px;
+  color: #94a3b8;
+  margin-top: 6px;
+  text-align: center;
+}
+
+.rule-card {
+  width: 304px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #111924;
+  border-width: 1px;
+  border-color: #1e293b;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.rule-text {
+  font-size: 13px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.param-card {
+  width: 304px;
+  height: 124px;
+  border-radius: 16px;
+  background-color: #121e19;
+  border-width: 1px;
+  border-color: #1f352b;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+  margin-bottom: 10px;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.param-card-last {
+  margin-bottom: 16px;
+}
+
+.param-head {
+  flex-direction: column;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.param-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #f8fafc;
+}
+
+.param-sub {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.stepper-row {
+  width: 276px;
+  height: 44px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step-btn {
+  width: 76px;
+  height: 44px;
+  border-radius: 14px;
+  background-color: #1e2f28;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step-btn-text {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.step-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #4ade80;
+}
+
+.smash-val {
+  color: #fb923c;
+}
+
+.clear-val {
+  color: #38bdf8;
+}
+
+.valid-val {
+  color: #4ade80;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import sensor from '@system.sensor'
+import brightness from '@system.brightness'
+import vibrator from '@system.vibrator'
+import { SwingDetector } from '../../common/swingDetector'
+import { adjustThreshold, classifySwing } from '../../common/swingClassifier'
+import { DEFAULT_SETTINGS, loadSettings, saveSettings } from '../../common/storageHelper'
+
+export default {
+  private: {
+    isMonitoring: false,
+    keepScreenLocked: false,
+    sensorError: '',
+    settings: Object.assign({}, DEFAULT_SETTINGS),
+    detector: null,
+
+    testCount: 0,
+    lastRawResult: null,
+    lastClassification: null,
+
+    dotColor: '#64748b',
+    statusText: '已暂停',
+    testCountText: '0 次',
+    toggleBg: '#13281d',
+    toggleBorder: '#22c55e',
+    toggleColor: '#4ade80',
+    toggleLabel: '继续',
+
+    heroBg: '#121e19',
+    heroBorder: '#1f352b',
+    judgmentText: '请挥拍测试',
+    judgmentColor: '#94a3b8',
+    speedText: '-- km/h',
+    metaText: '挥拍后显示速度与判定结果',
+    metaColor: '#94a3b8'
+  },
+
+  computed: {
+    smashText() {
+      return `${this.settings.smashThreshold}`
+    },
+    clearText() {
+      return `${this.settings.clearThreshold}`
+    },
+    minValidText() {
+      return `${this.settings.minValidSpeed}`
+    },
+    rulePreviewText() {
+      const m = this.settings.minValidSpeed
+      const c = this.settings.clearThreshold
+      const s = this.settings.smashThreshold
+      return `<${m} 无效 · ${m}-${c} 普通 · >${c} 高远 · >${s} 杀球`
+    }
+  },
+
+  onInit() {
+    this.detector = new SwingDetector(this.settings)
+    this.syncView()
+  },
+
+  async onShow() {
+    const settings = await loadSettings()
+    this.settings = settings
+    if (!this.detector) {
+      this.detector = new SwingDetector(settings)
+    } else {
+      this.detector.updateConfig(settings)
+    }
+    if (this.lastRawResult) {
+      this.lastClassification = classifySwing(this.lastRawResult.speedKmh, settings)
+    }
+    this.syncView()
+    this.startMonitoring()
+  },
+
+  onHide() {
+    this.stopMonitoring()
+  },
+
+  onDestroy() {
+    this.stopMonitoring()
+  },
+
+  syncView() {
+    if (this.sensorError) {
+      this.dotColor = '#ef4444'
+      this.statusText = '传感器异常'
+    } else if (this.isMonitoring) {
+      this.dotColor = '#22c55e'
+      this.statusText = '测试监测中'
+    } else {
+      this.dotColor = '#64748b'
+      this.statusText = '已暂停'
+    }
+
+    this.testCountText = `${this.testCount} 次`
+
+    if (this.isMonitoring) {
+      this.toggleBg = '#261618'
+      this.toggleBorder = '#ef4444'
+      this.toggleColor = '#fca5a5'
+      this.toggleLabel = '暂停'
+    } else {
+      this.toggleBg = '#13281d'
+      this.toggleBorder = '#22c55e'
+      this.toggleColor = '#4ade80'
+      this.toggleLabel = '继续'
+    }
+
+    if (this.lastClassification && this.lastRawResult) {
+      const cls = this.lastClassification
+      this.judgmentText = cls.label
+      this.speedText = `${cls.speedKmh.toFixed(1)} km/h`
+
+      if (cls.type === 'smash') {
+        this.heroBg = '#26130b'
+        this.heroBorder = '#f97316'
+        this.judgmentColor = '#fb923c'
+        this.metaText = `峰值 ${this.lastRawResult.peakG.toFixed(1)} g · ${this.lastRawResult.durationMs} ms`
+        this.metaColor = '#fdba74'
+      } else if (cls.type === 'clear') {
+        this.heroBg = '#0c1f2c'
+        this.heroBorder = '#38bdf8'
+        this.judgmentColor = '#38bdf8'
+        this.metaText = `峰值 ${this.lastRawResult.peakG.toFixed(1)} g · ${this.lastRawResult.durationMs} ms`
+        this.metaColor = '#7dd3fc'
+      } else if (cls.type === 'normal') {
+        this.heroBg = '#112219'
+        this.heroBorder = '#22c55e'
+        this.judgmentColor = '#4ade80'
+        this.metaText = `峰值 ${this.lastRawResult.peakG.toFixed(1)} g · ${this.lastRawResult.durationMs} ms`
+        this.metaColor = '#86efac'
+      } else {
+        this.heroBg = '#14191f'
+        this.heroBorder = '#475569'
+        this.judgmentColor = '#94a3b8'
+        this.metaText = `低于有效下限 ${this.settings.minValidSpeed} km/h`
+        this.metaColor = '#94a3b8'
+      }
+    } else {
+      this.heroBg = '#121e19'
+      this.heroBorder = '#1f352b'
+      this.judgmentText = '请挥拍测试'
+      this.judgmentColor = '#94a3b8'
+      this.speedText = '-- km/h'
+      this.metaText = this.sensorError || '挥拍后显示速度与判定结果'
+      this.metaColor = this.sensorError ? '#f87171' : '#94a3b8'
+    }
+
+    if (this.sensorError && this.lastRawResult) {
+      this.metaText = this.sensorError
+      this.metaColor = '#f87171'
+    }
+  },
+
+  safeSetKeepScreenOn(enable) {
+    try {
+      brightness.setKeepScreenOn({
+        keepScreenOn: enable,
+        fail() {}
+      })
+      this.keepScreenLocked = enable
+    } catch (e) {
+      this.keepScreenLocked = false
+    }
+  },
+
+  safeVibrate(mode) {
+    try {
+      vibrator.vibrate({
+        mode,
+        fail() {}
+      })
+    } catch (e) {}
+  },
+
+  toggleMonitoring() {
+    if (this.isMonitoring) {
+      this.stopMonitoring()
+    } else {
+      this.startMonitoring()
+    }
+  },
+
+  startMonitoring() {
+    if (this.isMonitoring) {
+      return
+    }
+    this.sensorError = ''
+    if (!this.detector) {
+      this.detector = new SwingDetector(this.settings)
+    } else {
+      this.detector.updateConfig(this.settings)
+      this.detector.reset()
+    }
+
+    if (this.settings.keepScreenOn) {
+      this.safeSetKeepScreenOn(true)
+    }
+
+    this.isMonitoring = true
+    this.syncView()
+
+    try {
+      sensor.subscribeAccelerometer({
+        interval: 'game',
+        callback: (ret) => {
+          this.handleAccelSample(ret)
+        },
+        fail: (data, code) => {
+          this.sensorError = `传感器失败 (${code || 'err'})`
+          this.stopMonitoring()
+        }
+      })
+    } catch (e) {
+      this.sensorError = '当前环境不支持传感器'
+      this.isMonitoring = false
+      if (this.keepScreenLocked) {
+        this.safeSetKeepScreenOn(false)
+      }
+      this.syncView()
+    }
+  },
+
+  stopMonitoring() {
+    if (this.isMonitoring) {
+      try {
+        sensor.unsubscribeAccelerometer()
+      } catch (e) {}
+      this.isMonitoring = false
+    }
+    if (this.keepScreenLocked) {
+      this.safeSetKeepScreenOn(false)
+    }
+    this.syncView()
+  },
+
+  handleAccelSample(ret) {
+    if (!this.isMonitoring || !ret || !this.detector) {
+      return
+    }
+    const result = this.detector.processSample(ret.x, ret.y, ret.z, Date.now())
+    if (!result) {
+      return
+    }
+
+    const classification = classifySwing(result.speedKmh, this.settings)
+    this.testCount += 1
+    this.lastRawResult = result
+    this.lastClassification = classification
+
+    if (this.settings.vibrate && classification.isValid) {
+      this.safeVibrate(classification.type === 'smash' ? 'long' : 'short')
+    }
+
+    this.syncView()
+  },
+
+  async changeThreshold(key, delta) {
+    const nextThresholds = adjustThreshold(this.settings, key, delta)
+    const next = Object.assign({}, this.settings, nextThresholds)
+    this.settings = await saveSettings(next)
+    if (this.lastRawResult) {
+      this.lastClassification = classifySwing(this.lastRawResult.speedKmh, this.settings)
+    }
+    this.syncView()
+  },
+
+  decSmash() {
+    this.changeThreshold('smashThreshold', -5)
+  },
+
+  incSmash() {
+    this.changeThreshold('smashThreshold', 5)
+  },
+
+  decClear() {
+    this.changeThreshold('clearThreshold', -5)
+  },
+
+  incClear() {
+    this.changeThreshold('clearThreshold', 5)
+  },
+
+  decMinValid() {
+    this.changeThreshold('minValidSpeed', -5)
+  },
+
+  incMinValid() {
+    this.changeThreshold('minValidSpeed', 5)
+  },
+
+  goBack() {
+    this.stopMonitoring()
+    router.back()
+  }
+}
+</script>

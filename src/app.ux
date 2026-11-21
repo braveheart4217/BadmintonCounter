@@ -1,0 +1,10 @@
+<script>
+export default {
+  onCreate() {
+    console.info('Badminton swing speed app created')
+  },
+  onDestroy() {
+    console.info('Badminton swing speed app destroyed')
+  }
+}
+</script>

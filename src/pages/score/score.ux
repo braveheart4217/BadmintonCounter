@@ -1,0 +1,790 @@
+<template>
+  <div class="page">
+    <div class="header">
+      <div
+        class="header-btn"
+        style="background-color: {{backBtnBg}}; border-color: {{backBtnBorder}};"
+        onclick="onBackClick"
+      >
+        <text class="header-btn-text" style="color: {{backBtnColor}};">{{backBtnLabel}}</text>
+      </div>
+      <div class="sensor-pill">
+        <div class="sensor-dot" style="background-color: {{sensorDotColor}};"></div>
+        <text class="shot-summary-text">{{shotSummaryText}}</text>
+      </div>
+      <div class="header-btn" onclick="onSwap">
+        <text class="header-btn-text">换边</text>
+      </div>
+    </div>
+
+    <div
+      class="score-card"
+      style="background-color: {{topCardBg}}; border-color: {{topCardBorder}};"
+      onclick="onScoreTop"
+    >
+      <div class="card-head">
+        <text class="team-text" style="color: {{topTeamColor}};">{{topLabel}}</text>
+        <text class="serve-text">{{topServeText}}</text>
+      </div>
+      <text class="score-num">{{topScore}}</text>
+      <text class="hint-text" style="color: {{topHintColor}};">{{topHint}}</text>
+    </div>
+
+    <div
+      class="status-bar"
+      style="background-color: {{statusBg}}; border-color: {{statusBorder}};"
+      onclick="onStatusClick"
+    >
+      <text class="status-text" style="color: {{statusTextColor}};">{{statusText}}</text>
+    </div>
+
+    <div
+      class="score-card-bottom"
+      style="background-color: {{bottomCardBg}}; border-color: {{bottomCardBorder}};"
+      onclick="onScoreBottom"
+    >
+      <div class="card-head">
+        <text class="team-text" style="color: {{bottomTeamColor}};">{{bottomLabel}}</text>
+        <text class="serve-text">{{bottomServeText}}</text>
+      </div>
+      <text class="score-num">{{bottomScore}}</text>
+      <text class="hint-text" style="color: {{bottomHintColor}};">{{bottomHint}}</text>
+    </div>
+
+    <div class="action-row">
+      <div
+        class="action-btn"
+        style="background-color: {{undoBg}}; border-color: {{undoBorder}};"
+        onclick="onUndo"
+      >
+        <text class="action-text" style="color: {{undoTextColor}};">撤销</text>
+      </div>
+      <div class="action-btn" onclick="onCycleMode">
+        <text class="action-text">{{modeLabel}}</text>
+      </div>
+      <div
+        class="action-btn"
+        style="background-color: {{finishBg}}; border-color: {{finishBorder}};"
+        onclick="onFinishClick"
+      >
+        <text class="action-text" style="color: {{finishTextColor}};">{{finishLabel}}</text>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+.page {
+  width: 100%;
+  height: 100%;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #0a0f0d;
+}
+
+.header {
+  width: 304px;
+  height: 40px;
+  margin-bottom: 8px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-btn {
+  width: 78px;
+  height: 38px;
+  border-radius: 12px;
+  background-color: #16221d;
+  border-width: 1px;
+  border-color: #263830;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-btn-text {
+  font-size: 16px;
+  color: #e2e8f0;
+  text-align: center;
+}
+
+.sensor-pill {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.sensor-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: #64748b;
+  margin-right: 6px;
+}
+
+.shot-summary-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #f8fafc;
+}
+
+.score-card {
+  width: 304px;
+  height: 132px;
+  margin-bottom: 8px;
+  border-radius: 18px;
+  background-color: #111924;
+  border-width: 2px;
+  border-color: #334155;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 14px;
+  padding-right: 14px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.score-card-bottom {
+  width: 304px;
+  height: 132px;
+  margin-bottom: 10px;
+  border-radius: 18px;
+  background-color: #112219;
+  border-width: 2px;
+  border-color: #22c55e;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 14px;
+  padding-right: 14px;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-head {
+  width: 276px;
+  height: 24px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-text {
+  font-size: 19px;
+  font-weight: bold;
+  color: #93c5fd;
+}
+
+.serve-text {
+  font-size: 16px;
+  color: #facc15;
+}
+
+.score-num {
+  font-size: 58px;
+  line-height: 62px;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+}
+
+.hint-text {
+  font-size: 16px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.status-bar {
+  width: 304px;
+  height: 38px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background-color: #121e19;
+  border-width: 1px;
+  border-color: #1f352b;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.status-text {
+  font-size: 17px;
+  font-weight: bold;
+  color: #e2e8f0;
+  text-align: center;
+}
+
+.action-row {
+  width: 304px;
+  height: 48px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.action-btn {
+  width: 96px;
+  height: 48px;
+  border-radius: 14px;
+  background-color: #16221d;
+  border-width: 1px;
+  border-color: #263830;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-text {
+  font-size: 17px;
+  color: #e2e8f0;
+  text-align: center;
+}
+</style>
+
+<script>
+import router from '@system.router'
+import sensor from '@system.sensor'
+import brightness from '@system.brightness'
+import vibrator from '@system.vibrator'
+import {
+  MATCH_MODES,
+  createInitialState,
+  getGamePointSide,
+  getServeCourt,
+  addPoint,
+  undoPoint,
+  toggleSwap,
+  cycleMode
+} from '../../common/scoreboard'
+import { SwingDetector } from '../../common/swingDetector'
+import { createMatchSession, recordMatchSwing, finalizeMatchRecord } from '../../common/matchSession'
+import { DEFAULT_SETTINGS, loadSettings, saveMatchRecord } from '../../common/storageHelper'
+
+export default {
+  private: {
+    initialized: false,
+    isFinishing: false,
+    isMonitoring: false,
+    keepScreenLocked: false,
+    sensorError: '',
+
+    state: createInitialState('21'),
+    settings: Object.assign({}, DEFAULT_SETTINGS),
+    detector: null,
+    matchSession: createMatchSession('21', DEFAULT_SETTINGS),
+
+    finishConfirmState: 'idle',
+    finishTimer: null,
+    backConfirmState: 'idle',
+    backTimer: null,
+
+    swingBannerText: '',
+    swingBannerBg: '#121e19',
+    swingBannerBorder: '#1f352b',
+    swingBannerColor: '#e2e8f0',
+    swingBannerTimer: null,
+
+    backBtnBg: '#16221d',
+    backBtnBorder: '#263830',
+    backBtnColor: '#e2e8f0',
+    backBtnLabel: '返回',
+    sensorDotColor: '#64748b',
+    shotSummaryText: '杀0 高0',
+
+    topLabel: '对方',
+    topScore: '0',
+    topCardBg: '#111924',
+    topCardBorder: '#334155',
+    topTeamColor: '#93c5fd',
+    topServeText: '',
+    topHint: '点击 +1',
+    topHintColor: '#94a3b8',
+
+    bottomLabel: '我方',
+    bottomScore: '0',
+    bottomCardBg: '#112219',
+    bottomCardBorder: '#22c55e',
+    bottomTeamColor: '#4ade80',
+    bottomServeText: '● 发球',
+    bottomHint: '点击 +1',
+    bottomHintColor: '#94a3b8',
+
+    statusBg: '#121e19',
+    statusBorder: '#1f352b',
+    statusText: '● 我方发球 · 右区(偶)',
+    statusTextColor: '#e2e8f0',
+
+    undoBg: '#0f1613',
+    undoBorder: '#1c2823',
+    undoTextColor: '#475569',
+    modeLabel: '21分制',
+    finishBg: '#16221d',
+    finishBorder: '#263830',
+    finishTextColor: '#e2e8f0',
+    finishLabel: '结束本局'
+  },
+
+  onInit() {
+    this.detector = new SwingDetector(this.settings)
+    this.syncView()
+  },
+
+  async onShow() {
+    const settings = await loadSettings()
+    this.settings = settings
+    if (!this.detector) {
+      this.detector = new SwingDetector(settings)
+    } else {
+      this.detector.updateConfig(settings)
+    }
+
+    if (!this.initialized) {
+      this.state = createInitialState('21')
+      this.matchSession = createMatchSession('21', settings, Date.now())
+      this.initialized = true
+    }
+
+    this.syncView()
+    if (!this.isFinishing) {
+      this.startMonitoring()
+    }
+  },
+
+  onHide() {
+    this.stopMonitoring()
+    this.clearAllTimers()
+  },
+
+  onDestroy() {
+    this.stopMonitoring()
+    this.clearAllTimers()
+  },
+
+  clearAllTimers() {
+    if (this.finishTimer) {
+      clearTimeout(this.finishTimer)
+      this.finishTimer = null
+    }
+    if (this.backTimer) {
+      clearTimeout(this.backTimer)
+      this.backTimer = null
+    }
+    if (this.swingBannerTimer) {
+      clearTimeout(this.swingBannerTimer)
+      this.swingBannerTimer = null
+    }
+  },
+
+  cancelFinishConfirm() {
+    if (this.finishTimer) {
+      clearTimeout(this.finishTimer)
+      this.finishTimer = null
+    }
+    this.finishConfirmState = 'idle'
+  },
+
+  cancelBackConfirm() {
+    if (this.backTimer) {
+      clearTimeout(this.backTimer)
+      this.backTimer = null
+    }
+    this.backConfirmState = 'idle'
+  },
+
+  syncView() {
+    const s = this.state
+    const modeObj = MATCH_MODES[s.mode] || MATCH_MODES['21']
+    const gp = getGamePointSide(s.myScore, s.oppScore, s.mode)
+
+    const isBackConfirm = this.backConfirmState === 'confirm'
+    this.backBtnBg = isBackConfirm ? '#261618' : '#16221d'
+    this.backBtnBorder = isBackConfirm ? '#ef4444' : '#263830'
+    this.backBtnColor = isBackConfirm ? '#fca5a5' : '#e2e8f0'
+    this.backBtnLabel = isBackConfirm ? '确认退出' : '返回'
+
+    if (this.sensorError) {
+      this.sensorDotColor = '#ef4444'
+    } else if (this.isMonitoring) {
+      this.sensorDotColor = '#22c55e'
+    } else {
+      this.sensorDotColor = '#64748b'
+    }
+
+    this.shotSummaryText = `杀${this.matchSession.smashCount} 高${this.matchSession.clearCount}`
+
+    const topSide = s.swapped ? 'my' : 'opp'
+    const bottomSide = s.swapped ? 'opp' : 'my'
+
+    const buildSideView = (side) => {
+      const isMy = side === 'my'
+      const isServing = !s.winner && s.server === side
+      let hint = '点击 +1'
+      let hintColor = '#94a3b8'
+      if (s.winner === side) {
+        hint = '本局胜出!'
+        hintColor = '#facc15'
+      } else if (s.winner) {
+        hint = '本局已结束'
+      } else if (gp === 'both' || gp === side) {
+        hint = '局点 · 点击 +1'
+        hintColor = '#facc15'
+      }
+      return {
+        label: isMy ? '我方' : '对方',
+        score: String(isMy ? s.myScore : s.oppScore),
+        cardBg: isMy ? '#112219' : '#111924',
+        cardBorder: isMy ? '#22c55e' : '#334155',
+        teamColor: isMy ? '#4ade80' : '#93c5fd',
+        serveText: isServing ? '● 发球' : '',
+        hint,
+        hintColor
+      }
+    }
+
+    const top = buildSideView(topSide)
+    this.topLabel = top.label
+    this.topScore = top.score
+    this.topCardBg = top.cardBg
+    this.topCardBorder = top.cardBorder
+    this.topTeamColor = top.teamColor
+    this.topServeText = top.serveText
+    this.topHint = top.hint
+    this.topHintColor = top.hintColor
+
+    const bottom = buildSideView(bottomSide)
+    this.bottomLabel = bottom.label
+    this.bottomScore = bottom.score
+    this.bottomCardBg = bottom.cardBg
+    this.bottomCardBorder = bottom.cardBorder
+    this.bottomTeamColor = bottom.teamColor
+    this.bottomServeText = bottom.serveText
+    this.bottomHint = bottom.hint
+    this.bottomHintColor = bottom.hintColor
+
+    if (s.winner) {
+      const winnerName = s.winner === 'opp' ? '对方胜出' : '我方胜出'
+      this.statusBg = '#22c55e'
+      this.statusBorder = '#4ade80'
+      this.statusText = `${winnerName} · 点击结算`
+      this.statusTextColor = '#052e16'
+    } else if (this.swingBannerText) {
+      this.statusBg = this.swingBannerBg
+      this.statusBorder = this.swingBannerBorder
+      this.statusText = this.swingBannerText
+      this.statusTextColor = this.swingBannerColor
+    } else if (this.sensorError) {
+      this.statusBg = '#261618'
+      this.statusBorder = '#ef4444'
+      this.statusText = this.sensorError
+      this.statusTextColor = '#fca5a5'
+    } else {
+      const serverName = s.server === 'opp' ? '对方发球' : '我方发球'
+      const court = getServeCourt(s)
+      const isDeuce =
+        modeObj.winByTwo &&
+        modeObj.target > 0 &&
+        s.myScore >= modeObj.target - 1 &&
+        s.myScore === s.oppScore
+
+      this.statusBg = '#121e19'
+      this.statusBorder = '#1f352b'
+      if (gp === 'both') {
+        this.statusText = `● ${serverName} · 决胜分`
+      } else if (gp === 'my') {
+        this.statusText = `● ${serverName} · 我方局点`
+      } else if (gp === 'opp') {
+        this.statusText = `● ${serverName} · 对方局点`
+      } else {
+        this.statusText = `● ${serverName} · ${court}`
+      }
+      this.statusTextColor = gp !== null || isDeuce ? '#facc15' : '#e2e8f0'
+    }
+
+    const canUndo = Array.isArray(s.undoStack) && s.undoStack.length > 0
+    this.undoBg = canUndo ? '#16221d' : '#0f1613'
+    this.undoBorder = canUndo ? '#263830' : '#1c2823'
+    this.undoTextColor = canUndo ? '#e2e8f0' : '#475569'
+    this.modeLabel = modeObj.label
+
+    const isFinishConfirm = this.finishConfirmState === 'confirm'
+    if (s.winner) {
+      this.finishBg = '#13281d'
+      this.finishBorder = '#22c55e'
+      this.finishTextColor = '#4ade80'
+      this.finishLabel = '结算本局'
+    } else {
+      this.finishBg = isFinishConfirm ? '#261618' : '#16221d'
+      this.finishBorder = isFinishConfirm ? '#ef4444' : '#263830'
+      this.finishTextColor = isFinishConfirm ? '#fca5a5' : '#e2e8f0'
+      this.finishLabel = isFinishConfirm ? '确认结束' : '结束本局'
+    }
+  },
+
+  safeSetKeepScreenOn(enable) {
+    try {
+      brightness.setKeepScreenOn({
+        keepScreenOn: enable,
+        fail() {}
+      })
+      this.keepScreenLocked = enable
+    } catch (e) {
+      this.keepScreenLocked = false
+    }
+  },
+
+  safeVibrate(mode) {
+    try {
+      vibrator.vibrate({
+        mode,
+        fail() {}
+      })
+    } catch (e) {}
+  },
+
+  startMonitoring() {
+    if (this.isMonitoring) {
+      return
+    }
+    this.sensorError = ''
+    if (!this.detector) {
+      this.detector = new SwingDetector(this.settings)
+    } else {
+      this.detector.updateConfig(this.settings)
+      this.detector.reset()
+    }
+
+    if (this.settings.keepScreenOn) {
+      this.safeSetKeepScreenOn(true)
+    }
+
+    this.isMonitoring = true
+    this.syncView()
+
+    try {
+      sensor.subscribeAccelerometer({
+        interval: 'game',
+        callback: (ret) => {
+          this.handleAccelSample(ret)
+        },
+        fail: (data, code) => {
+          this.sensorError = `测速传感器异常 (${code || 'err'})`
+          this.stopMonitoring()
+        }
+      })
+    } catch (e) {
+      this.sensorError = '当前环境不支持测速'
+      this.isMonitoring = false
+      if (this.keepScreenLocked) {
+        this.safeSetKeepScreenOn(false)
+      }
+      this.syncView()
+    }
+  },
+
+  stopMonitoring() {
+    if (this.isMonitoring) {
+      try {
+        sensor.unsubscribeAccelerometer()
+      } catch (e) {}
+      this.isMonitoring = false
+    }
+    if (this.keepScreenLocked) {
+      this.safeSetKeepScreenOn(false)
+    }
+    this.syncView()
+  },
+
+  showSwingBanner(classification) {
+    if (this.swingBannerTimer) {
+      clearTimeout(this.swingBannerTimer)
+      this.swingBannerTimer = null
+    }
+    const speedStr = classification.speedKmh.toFixed(1)
+    if (classification.type === 'smash') {
+      this.swingBannerText = `杀球 ${speedStr} km/h`
+      this.swingBannerBg = '#431407'
+      this.swingBannerBorder = '#f97316'
+      this.swingBannerColor = '#fdba74'
+    } else if (classification.type === 'clear') {
+      this.swingBannerText = `高远球 ${speedStr} km/h`
+      this.swingBannerBg = '#0c293a'
+      this.swingBannerBorder = '#38bdf8'
+      this.swingBannerColor = '#7dd3fc'
+    } else {
+      this.swingBannerText = `普通挥拍 ${speedStr} km/h`
+      this.swingBannerBg = '#12281d'
+      this.swingBannerBorder = '#22c55e'
+      this.swingBannerColor = '#86efac'
+    }
+
+    this.swingBannerTimer = setTimeout(() => {
+      this.swingBannerText = ''
+      this.swingBannerTimer = null
+      this.syncView()
+    }, 2500)
+  },
+
+  handleAccelSample(ret) {
+    if (!this.isMonitoring || !ret || !this.detector) {
+      return
+    }
+    const result = this.detector.processSample(ret.x, ret.y, ret.z, Date.now())
+    if (!result) {
+      return
+    }
+
+    const outcome = recordMatchSwing(this.matchSession, result, this.settings)
+    this.matchSession = outcome.session
+    if (!outcome.recorded) {
+      return
+    }
+
+    if (outcome.classification.type === 'smash' && this.settings.vibrate) {
+      this.safeVibrate('long')
+    }
+
+    this.showSwingBanner(outcome.classification)
+    this.syncView()
+  },
+
+  onScoreTop() {
+    const topSide = this.state.swapped ? 'my' : 'opp'
+    this.scoreSide(topSide)
+  },
+
+  onScoreBottom() {
+    const bottomSide = this.state.swapped ? 'opp' : 'my'
+    this.scoreSide(bottomSide)
+  },
+
+  scoreSide(side) {
+    this.cancelFinishConfirm()
+    this.cancelBackConfirm()
+    if (this.state.winner) {
+      this.syncView()
+      return
+    }
+    const next = addPoint(this.state, side)
+    this.state = next
+    this.syncView()
+
+    if (this.settings.vibrate) {
+      this.safeVibrate(next.winner ? 'long' : 'short')
+    }
+  },
+
+  onStatusClick() {
+    if (!this.state.winner) {
+      return
+    }
+    this.finishMatch('win')
+  },
+
+  onUndo() {
+    this.cancelFinishConfirm()
+    this.cancelBackConfirm()
+    if (!Array.isArray(this.state.undoStack) || this.state.undoStack.length === 0) {
+      this.syncView()
+      return
+    }
+    this.state = undoPoint(this.state)
+    this.syncView()
+  },
+
+  onSwap() {
+    this.cancelFinishConfirm()
+    this.cancelBackConfirm()
+    this.state = toggleSwap(this.state)
+    this.syncView()
+  },
+
+  onCycleMode() {
+    this.cancelFinishConfirm()
+    this.cancelBackConfirm()
+    const next = cycleMode(this.state)
+    this.state = next
+    this.matchSession = Object.assign({}, this.matchSession, { mode: next.mode })
+    this.syncView()
+  },
+
+  onFinishClick() {
+    this.cancelBackConfirm()
+    if (this.state.winner) {
+      this.finishMatch('win')
+      return
+    }
+    if (this.finishConfirmState === 'idle') {
+      this.finishConfirmState = 'confirm'
+      this.syncView()
+      if (this.finishTimer) {
+        clearTimeout(this.finishTimer)
+      }
+      this.finishTimer = setTimeout(() => {
+        this.finishConfirmState = 'idle'
+        this.finishTimer = null
+        this.syncView()
+      }, 3000)
+      return
+    }
+
+    this.cancelFinishConfirm()
+    this.finishMatch('manual')
+  },
+
+  async finishMatch(endReason) {
+    if (this.isFinishing) {
+      return
+    }
+    this.isFinishing = true
+    this.stopMonitoring()
+    this.clearAllTimers()
+
+    const record = finalizeMatchRecord(this.matchSession, this.state, Date.now(), endReason)
+    await saveMatchRecord(record)
+
+    router.replace({
+      uri: '/pages/summary',
+      params: {
+        matchId: record.id
+      }
+    })
+  },
+
+  onBackClick() {
+    this.cancelFinishConfirm()
+    const hasProgress =
+      this.state.myScore > 0 ||
+      this.state.oppScore > 0 ||
+      this.matchSession.totalSwings > 0
+
+    if (!hasProgress) {
+      router.back()
+      return
+    }
+
+    if (this.backConfirmState === 'idle') {
+      this.backConfirmState = 'confirm'
+      this.syncView()
+      if (this.backTimer) {
+        clearTimeout(this.backTimer)
+      }
+      this.backTimer = setTimeout(() => {
+        this.backConfirmState = 'idle'
+        this.backTimer = null
+        this.syncView()
+      }, 3000)
+      return
+    }
+
+    this.cancelBackConfirm()
+    this.stopMonitoring()
+    router.back()
+  }
+}
+</script>
